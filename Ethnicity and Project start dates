@@ -1,0 +1,129 @@
+# Clear workspace
+rm(list = ls())
+
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(scales)
+
+# Define folder path and output file
+folder_path <- "INSERT YOUR FOLDER PATH HERE"
+output_file <- file.path(folder_path, "ethnic_projects_per_year.jpg")
+
+# Load the dataset
+df <- tribble(
+  ~Project, ~Start_date, ~Ethnic,
+  "acapa", 2013, 1,
+  "arlequin", 2015, 1,
+  "banakale", 2016, 1,
+  "banco2", 2017, 1,
+  "bcybm", 2013, 1,
+  "cajambre", 2013, 1,
+  "carmendarien", 2014, 1,
+  "chocodarien", 2010, 1,
+  "cmari", 2017, 1,
+  "co2biofasei", 2015, 0,
+  "co2biop2", 2016, 0,
+  "cocomacia", 2016, 1,
+  "cocoman", 2016, 1,
+  "concosta", 2013, 1,
+  "corpochivor", 2014, 0,
+  "crimapredputu", 2018, 1,
+  "dabucury", 2019, 1,
+  "delfines", 2010, 1,
+  "tigre", 2018, 1,
+  "galilea", 2010, 0,
+  "guacharos", 2014, 0,
+  "kaliawiri", 2015, 1,
+  "magnolios", 2016, 0,
+  "monocha", 2016, 1,
+  "mutata", 2013, 1,
+  "naya", 2016, 1,
+  "otun", 2015, 0,
+  "palameku", 2010, 1,
+  "parirgyrn", 2017, 1,
+  "parivp1", 2018, 1,
+  "Peliwaisi", 2015, 1,
+  "prediopu", 2016, 1,
+  "siviru", 2013, 1,
+  "tangara", 2010, 1,
+  "yaawii", 2015, 1,
+  "yutucu", 2016, 1,
+  "zabalo", 2018, 1,
+  "cispata", 2015, 0,
+  "bosquespaz", 2019, 0,
+  "yaguara", 2022, 1,
+  "ccpvc", 2014, 1,
+  "condoto", 2019, 1,
+  "florinirida", 2017, 1,
+  "mataven", 2013, 1,
+  "Riscales", 2014, 1,
+  "vida manglar", 2015, 0,
+  "acaba", 2014, 1
+)
+
+# Classify Ethnic as "Ethnic" or "Other"
+df <- df %>%
+  mutate(Category = ifelse(Ethnic == 1, "Ethnic", "Other"))
+
+# Count projects per year and category
+df_count <- df %>%
+  group_by(Start_date, Category) %>%
+  summarise(n_projects = n(), .groups = 'drop')
+
+# Calculate total projects per year and percentages
+df_count <- df_count %>%
+  group_by(Start_date) %>%
+  mutate(
+    total_year = sum(n_projects),
+    percent = n_projects / total_year
+  ) %>%
+  ungroup()
+
+# Define custom colors and font
+custom_colors <- c("Ethnic" = "cadetblue3", "Other" = "slategray4")
+custom_font <- "Arial"
+font_size <- 20
+
+# Save plot to JPG
+jpeg(output_file, width = 14, height = 8, units = "in", res = 300)
+
+# Create the bar chart
+ggplot(df_count, aes(x = factor(Start_date), y = n_projects, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack", width=0.6) +
+  geom_text(
+    aes(
+      label = paste0(round(percent * 100), "%"),
+      group = Category
+    ),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 6.5,
+    fontface = "bold",
+    family = custom_font
+  ) +
+  scale_fill_manual(values = custom_colors) +
+  labs(
+    title = "Ethnic project developers in new projects",
+    x = "Start Year",
+    y = "Number of Projects",
+    fill = "Project type"
+  ) +
+  theme_minimal(base_family = custom_font) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = font_size),
+    axis.text.y = element_text(size = font_size),
+    axis.title = element_text(size = font_size + 2),
+    legend.title = element_text(size = font_size, face="bold"),
+    legend.text = element_text(size = font_size),
+    plot.title = element_text(hjust= 0.5, size = font_size + 4, face = "bold"),
+    panel.grid.major = element_line(color = "gray80")
+  )
+
+# Close the JPG device to save the file
+dev.off()
+
+# Confirmation message
+cat("The bar chart has been saved to:", output_file, "\n")
+
