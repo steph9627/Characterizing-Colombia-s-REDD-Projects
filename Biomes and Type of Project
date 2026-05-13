@@ -1,0 +1,130 @@
+# Clear workspace
+rm(list = ls())
+
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(scales)
+
+# Define folder path and output file
+folder_path <- "INSERT YOUR FOLDER PATH HERE"
+output_file <- file.path(folder_path, "projects_per_biome.jpg")
+
+# Load the dataset
+df <- tribble(
+  ~Project, ~Biome, ~Type, ~Year, 
+  "acapa", "Pacific", "AUDD", 2013,
+  "arlequin", "Pacific", "AUDD, ARR, IFM", 2015, 
+  "banakale", "Orinoco", "AUDD, ARR, IFM", 2016, 
+  "banco2", "Andean", "AUDD, IFM", 2017, 
+  "bcybm", "Pacific", "AUDD", 2013, 
+  "cajambre", "Pacific", "AUDD", 2013, 
+  "carmendarien", "Pacific", "AUDD", 2014, 
+  "chocodarien", "Pacific", "AUDD, IFM", 2010,
+  "cmari", "Amazon", "AUDD, ARR", 2017, 
+  "co2biofasei", "Orinoco", "AUDD, ARR, IFM", 2015, 
+  "co2biop2", "Orinoco", "AUDD", 2016, 
+  "cocomacia", "Pacific", "IFM", 2016,
+  "cocoman", "Pacific", "AUDD, ARR", 2016, 
+  "concosta", "Pacific", "AUDD", 2013, 
+  "corpochivor", "Andean", "AUDD, ARR", 2014, 
+  "crimapredputu", "Amazon", "AUDD", 2018, 
+  "dabucury", "Amazon", "AUDD", 2019,
+  "delfines", "Pacific", "AUDD, ARR", 2010, 
+  "tigre", "Orinoco", "AUDD", 2018, 
+  "galilea", "Andean", "AUDD", 2010,
+  "guacharos", "Andean", "AUDD", 2014,
+  "kaliawiri", "Amazon", "AUDD, ARR", 2015,
+  "magnolios", "Andean", "AUDD, ARR", 2016,
+  "monocha", "Amazon", "AUDD", 2016,
+  "mutata", "Andean", "AUDD", 2013,
+  "naya", "Pacific", "AUDD, ARR",2016,
+  "otun", "Andean", "AUDD, ARR", 2015, 
+  "palameku", "Orinoco", "AUDD, ARR", 2010, 
+  "parirgyrn", "Amazon", "AUDD", 2017, 
+  "parivp1", "Amazon", "AUDD, ARR", 2018, 
+  "Peliwaisi", "Amazon", "AUDD, ARR", 2015, 
+  "prediopu", "Amazon", "AUDD", 2016,
+  "siviru", "Pacific", "AUDD", 2013, 
+  "tangara", "Pacific", "AUDD", 2010, 
+  "yaawii", "Amazon", "AUDD, ARR, IFM", 2015, 
+  "yutucu", "Amazon", "AUDD", 2016,
+  "zabalo", "Amazon", "AUDD, ARR", 2018,
+  "cispata", "Caribbean", "AUDD", 2015,
+  "bosquespaz", "Amazon", "AUDD", 2019, 
+  "yaguara", "Amazon", "AUDD, ARR", 2022,
+  "ccpvc", "Pacific", "AUDD", 2014, 
+  "condoto", "Pacific", "AUDD", 2019, 
+  "florinirida", "Amazon", "AUDD", 2017,
+  "mataven", "Amazon", "AUDD", 2013,
+  "Riscales", "Pacific", "AUDD, ARR", 2014, 
+  "vida manglar", "Caribbean", "AUDD", 2015,
+  "acaba", "Pacific", "AUDD", 2014,
+  "jaimacuru", "Amazon", "AUDD, ARR, IFM", 2019
+)
+
+# Classify projects as "AUDD alone" or "Other"
+df <- df %>%
+  mutate(Category = ifelse(Type == "AUDD", "AUDD only", "Mixed"))
+
+# Count projects per Biome and Category
+df_count <- df %>%
+  group_by(Biome, Category) %>%
+  summarise(n_projects = n(), .groups = 'drop')
+
+# Calculate total projects per biome and percentages
+df_count <- df_count %>%
+  group_by(Biome) %>%
+  mutate(
+    total_biome = sum(n_projects),
+    percent = n_projects / total_biome
+  ) %>%
+  ungroup()
+
+# Define custom colors and font
+custom_colors <- c("AUDD only" = "slategray4", "Mixed" = "cadetblue3")  # Change colors here
+custom_font <- "Arial"  # Change font here
+font_size <- 25  # Change font size here
+
+# Save plot to JPG
+jpeg(output_file, width = 14, height = 8, units = "in", res = 300)
+
+# Create the bar chart
+ggplot(df_count, aes(x = Biome, y = n_projects, fill = Category)) +
+  geom_bar(stat = "identity", position = "stack", width=0.4) +
+  geom_text(
+    aes(
+      label = paste0(round(percent * 100), "%"),
+      group = Category
+    ),
+    position = position_stack(vjust = 0.5),
+    color = "white",
+    size = 8,
+    fontface = "bold",
+    family = custom_font
+  ) +
+  scale_fill_manual(values = custom_colors) +
+  labs(
+    title = " ",
+    x = "Biome",
+    y = "Number of Projects",
+    fill = "Project Activites"
+  ) +
+  theme_minimal(base_family = custom_font) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = font_size),
+    axis.text.y = element_text(size = font_size),
+    axis.title = element_text(size = font_size + 2),
+    legend.title = element_text(size = font_size, face="bold"),
+    legend.text = element_text(size = font_size),
+    plot.title = element_text(hjust= 0.5, size = font_size + 4, face = "bold"),
+    panel.grid.major = element_line(color = "gray80")
+  )
+
+# Close the JPG device to save the file
+dev.off()
+
+# Confirmation message
+cat("The bar chart has been saved to:", output_file, "\n")
+
