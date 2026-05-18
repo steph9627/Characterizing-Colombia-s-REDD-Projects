@@ -1,5 +1,5 @@
 # Characterizing-Colombia-s-REDD-Projects
-This repository contains the data and materials associated with the paper, including: (i) a summary table of all projects analyzed, (ii) a shapefile containing the polygons of all projects, and (iii) the R scripts used for data analysis.
+This repository contains the data and materials associated with the paper, including: (i) a summary table of all projects analyzed, (ii) a [shapefile]([Colombian REDD Projects.shp](https://github.com/steph9627/Characterizing-Colombia-s-REDD-Projects/blob/59b8610c9decd6f9d39abacf5b63b4673a8c288e/Colombian%20REDD%20Projects.shp)) containing the polygons of all projects, and (iii) the R scripts used for data analysis ().
 
 # How to run the scripts
 
