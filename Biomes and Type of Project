@@ -61,7 +61,8 @@ df <- tribble(
   "Riscales", "Pacific", "AUDD, ARR", 2014, 
   "vida manglar", "Caribbean", "AUDD", 2015,
   "acaba", "Pacific", "AUDD", 2014,
-  "jaimacuru", "Amazon", "AUDD, ARR, IFM", 2019
+  "jaimacuru", "Amazon", "AUDD, ARR, IFM", 2019,
+  "makaro", "Amazon", "AUDD, ARR, IFM", 2018
 )
 
 # Classify projects as "AUDD alone" or "Other"
