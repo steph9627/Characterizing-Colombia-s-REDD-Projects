@@ -60,7 +60,8 @@ df <- tribble(
   "mataven", 2013, 1,
   "Riscales", 2014, 1,
   "vida manglar", 2015, 0,
-  "acaba", 2014, 1
+  "acaba", 2014, 1,
+  "makaro", 2018, 1
 )
 
 # Classify Ethnic as "Ethnic" or "Other"
