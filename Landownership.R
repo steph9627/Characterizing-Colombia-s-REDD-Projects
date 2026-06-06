@@ -1,8 +1,8 @@
 # Clear workspace
 rm(list = ls())
 
-# Define desktop path
-desktop_path <- "C:/Users/steph/Desktop/Stuff/Thesis related/Thesis graphs R/Graphs"
+# Define folder path and output file
+folder_path <- "INSERT YOUR FOLDER PATH HERE"
 
 # Data for project owners
 datos <- data.frame(
@@ -37,7 +37,7 @@ font_family <- "Arial"
 title_color <- "#585858"
 
 # Output file path
-output_file <- paste0(desktop_path, "/project_owners_pie_only_final.jpg")
+output_file <- paste0(folder_path, "/project_owners_pie_only_final.jpg")
 
 # Export as JPG with 300 dpi
 jpeg(output_file, width = 9, height = 5, units = "in", res = 300)
