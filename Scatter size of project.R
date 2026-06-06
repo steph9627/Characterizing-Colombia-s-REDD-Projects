@@ -5,39 +5,14 @@ library(tidyverse)
 library(ggplot2)
 library(dplyr)
 
-# Set working directory
-setwd("C:/Users/steph/Desktop/Stuff/Thesis related/")
+# Define folder path and output file
+folder_path <- "INSERT YOUR FOLDER PATH HERE"
 
 # Load data
 datos <- read_csv("tabla proyectos redd de mi tesis 2024.csv")
 
 # Filter out outliers
 datos_filtered <- datos %>% filter(Area_Ha < 3000000)
-
-# Create scatter plot
-scatterpl <- ggplot(datos_filtered, aes(x = `Start date`, y = Area_Ha / 1000, color = factor(single))) +
-  geom_point() +
-  labs(
-    x = "Year",
-    y = "Area (thousand ha)",
-    color = "Type of project"
-  ) +
-  scale_color_manual(
-    values = c("0" = "cadetblue", "1" = "#fb8072"),
-    labels = c("0" = "Grouped", "1" = "Single Polygon")
-  ) +
-  scale_x_continuous(
-    breaks = pretty(datos_filtered$`Start date`),
-    labels = as.integer
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text = element_text(size = 16),
-    axis.title = element_text(size = 16, face = "bold"),
-    legend.text = element_text(size = 16),
-    legend.title = element_text(size = 17, face = "bold"),
-    plot.title = element_text(size = 18, face = "bold")
-  )
 
 # Create scatter + boxplot
 scatterboxpl <- ggplot(datos_filtered, aes(x = factor(`Start date`), y = Area_Ha / 1000)) +
@@ -70,20 +45,11 @@ scatterboxpl <- ggplot(datos_filtered, aes(x = factor(`Start date`), y = Area_Ha
     plot.title = element_text(size = 18, face = "bold")
   )
 
-# === Set output directory and filenames ===
-output_dir <- file.path(getwd(), "Thesis graphs R", "Graphs")
-dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)  # make sure directory exists
 
-output_file1 <- file.path(output_dir, "scatter_project_size.jpg")
-output_file2 <- file.path(output_dir, "scatterboxpl_project_size.jpg")
-
-# === Save scatter plot ===
-jpeg(output_file1, width = 14, height = 8, units = "in", res = 300)
-print(scatterpl)
-dev.off()
+output_file1 <- file.path(folder_path, "scatterboxpl_project_size.jpg")
 
 # === Save scatter + boxplot ===
-jpeg(output_file2, width = 14, height = 8, units = "in", res = 300)
+jpeg(output_file1, width = 14, height = 8, units = "in", res = 300)
 print(scatterboxpl)
 dev.off()
 
